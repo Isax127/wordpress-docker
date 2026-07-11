@@ -1,38 +1,25 @@
-pipeline {
+﻿pipeline {
     agent any
-
     stages {
-        stage('Checkout desde Git') {
+        stage('Checkout') {
             steps {
-                checkout scm
+                git url: 'https://github.com/Isax127/wordpress-docker.git', branch: 'main'
             }
         }
-
-        stage('Detener ambiente (docker compose down)') {
+        stage('Down') {
             steps {
-                sh 'docker compose down || true'
+                sh '/usr/local/bin/docker-compose down || true'
             }
         }
-
-        stage('Levantar ambiente (docker compose up -d)') {
+        stage('Up') {
             steps {
-                sh 'docker compose up -d'
+                sh '/usr/local/bin/docker-compose up -d'
             }
         }
-
-        stage('Verificar despliegue (docker ps)') {
+        stage('Verify') {
             steps {
-                sh 'docker ps'
+                sh '/usr/bin/docker ps'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Despliegue exitoso: WordPress disponible en http://localhost:8080'
-        }
-        failure {
-            echo 'El despliegue falló, revisar logs.'
         }
     }
 }
